@@ -1,7 +1,7 @@
 const CACHE_NAME = 'enc-viewer-cache-v1';
 const OFFLINE_FILES = [
   './',
-  './l.html',
+  './index.html',
   './pdfjs/pdf.mjs',
   './pdfjs/pdf.worker.mjs',
   './manifest.json',
