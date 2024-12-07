@@ -112,6 +112,10 @@
     <div class="page-info" id="pageInfo">Page 0 of 0</div>
     <div id="pdfContainer"></div>
 
+<button id="installButton" style="display: none; position: fixed; bottom: 20px; right: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Install App
+    </button>
+
     <!-- Include PDF.js library as an ES module -->
     <script type="module">
         import * as pdfjsLib from './pdfjs/pdf.mjs';
@@ -213,6 +217,36 @@
         window.handleFileSelection = handleFileSelection;
     </script>
   <script type="module">
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default mini-infobar
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Show an "Install" button or custom prompt
+    const installButton = document.createElement('button');
+    installButton.textContent = 'Install App';
+    installButton.style = 'position: fixed; bottom: 20px; right: 20px; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;';
+    document.body.appendChild(installButton);
+
+    installButton.addEventListener('click', () => {
+        installButton.style.display = 'none';
+        deferredPrompt.prompt();
+
+        // Wait for user response
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('PWA Installed');
+            } else {
+                console.log('PWA Installation Dismissed');
+            }
+            deferredPrompt = null;
+        });
+    });
+});
+
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js')
         .then(() => console.log('Service Worker Registered'))
